@@ -298,6 +298,7 @@ namespace Emerald
 
         public static void ProcessGamePacket(Packet p)
         {
+            // Debug.Log((ServerPacketIds)p.Index);
             switch (p.Index)
             {
                 case (short)ServerPacketIds.MapInformation:
@@ -466,11 +467,20 @@ namespace Emerald
                 case(short)ServerPacketIds.NPCSell:
                     NpcSell((S.NPCSell)p);
                     break;
+                case(short)ServerPacketIds.SellItem:
+                    SellItem((S.SellItem)p);
+                    break;
                 case(short)ServerPacketIds.NPCRepair:
-                    NpcRepair((S.NPCSell)p);
+                    NpcGoods();
                     break;
                 case(short)ServerPacketIds.NPCSRepair:
                     NpcSpecialRepair((S.NPCSRepair)p);
+                    break;
+                case(short)ServerPacketIds.RepairItem:
+                    // RepairItem((S.RepairItem) p);
+                    break;
+                case(short)ServerPacketIds.ItemRepaired:
+                    ItemRepaired((S.ItemRepaired) p);
                     break;
                 case(short)ServerPacketIds.KeepAlive:
                     // Received but unhandled
@@ -513,24 +523,27 @@ namespace Emerald
                     // Received but unhandled
                     break;
                 default:
-                    Debug.Log((ServerPacketIds)p.Index);
+                    ServerPacketIds packetId = (ServerPacketIds) p.Index;
+                    Debug.Log($"Packet received and not handled: {packetId}");
                     //base.ProcessPacket(p);
                     break;
             }
         }
 
-        private static void NpcSpecialRepair(S.NPCSRepair npcsRepair)
+        private static void ItemRepaired(S.ItemRepaired itemRepaired)
         {
-            throw new NotImplementedException();
+            gameManager.ItemRepaired(itemRepaired);
         }
 
-        private static void NpcRepair(S.NPCSell npcSell)
+        private static void RepairItem(S.RepairItem repairItem)
         {
-            throw new NotImplementedException();
+            Debug.Log(repairItem.UniqueID);
         }
 
-        private static void NpcSell(S.NPCSell npcSell)
+        private static void RemoveSlotItem(S.RemoveSlotItem p)
         {
+            Debug.Log(p.Grid);
+            Debug.Log(p.GridTo);
         }
 
         public static void SendVersion()
@@ -926,9 +939,32 @@ namespace Emerald
 
         // Shop Package Handlers //
         private static void NpcGoods(S.NPCGoods p) => gameManager.SetShopGoods(p.List);
+        private static void NpcGoods() => gameManager.SetShopGoods(new List<UserItem>());
+        
+
+        private static void SellItem(S.SellItem p)
+        {
+            gameManager.SellItem(p);
+        }
+
+        private static void NpcSpecialRepair(S.NPCSRepair npcSRepair)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void NpcRepair(S.NPCRepair npcRepair)
+        {
+            Debug.Log(npcRepair.Rate);
+        }
+
+        private static void NpcSell(S.NPCSell npcSell)
+        {
+        }
+
 
         public static void Enqueue(Packet p)
         {
+            // Debug.Log(p);
             if (_sendList != null && p != null)
                 _sendList.Enqueue(p);
         }

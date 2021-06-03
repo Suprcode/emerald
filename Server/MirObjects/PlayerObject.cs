@@ -14300,6 +14300,12 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[i];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 if (type == PanelType.Buy)
                 {
@@ -14307,6 +14313,7 @@ namespace Server.MirObjects
                 }
             }
         }
+        
         public void CraftItem(ulong index, uint count, int[] slots)
         {
             if (Dead || count < 1) return;
@@ -14318,10 +14325,15 @@ namespace Server.MirObjects
                 NPCObject ob = CurrentMap.NPCs[i];
                 if (ob.ObjectID != NPCID) continue;
 
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
+                
                 ob.Craft(this, index, count, slots);
             }
         }
-
 
         public void SellItem(ulong uniqueID, uint count)
         {
@@ -14342,6 +14354,12 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[n];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 UserItem temp = null;
                 int index = -1;
@@ -14404,10 +14422,9 @@ namespace Server.MirObjects
                 return;
             }
 
-
-
             Enqueue(p);
         }
+        
         public void RepairItem(ulong uniqueID, bool special = false)
         {
             Enqueue(new S.RepairItem { UniqueID = uniqueID });
@@ -14420,6 +14437,12 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[n];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 UserItem temp = null;
                 int index = -1;
@@ -14510,6 +14533,12 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[n];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 UserItem temp = null;
                 int index = -1;
@@ -14577,6 +14606,7 @@ namespace Server.MirObjects
             return (UserMatch || !info.Expired && !info.Sold) && ((MatchType == ItemType.Nothing || info.Item.Info.Type == MatchType) &&
                 (string.IsNullOrWhiteSpace(MatchName) || info.Item.Info.Name.Replace(" ", "").IndexOf(MatchName, StringComparison.OrdinalIgnoreCase) >= 0));
         }
+        
         public void MarketPage(int page)
         {
             if (Dead || Envir.Time < SearchTime) return;
@@ -14589,6 +14619,12 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[n];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 List<ClientAuction> listings = new List<ClientAuction>();
 
@@ -14651,10 +14687,17 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[n];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 GetMarket(match, ItemType.Nothing);
             }
         }
+        
         public void MarketRefresh()
         {
             if (Dead || Envir.Time < SearchTime) return;
@@ -14667,10 +14710,17 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[n];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 GetMarket(string.Empty, MatchType);
             }
         }
+        
         public void MarketBuy(ulong auctionID)
         {
             if (Dead)
@@ -14690,6 +14740,12 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[n];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 foreach (AuctionInfo auction in Envir.Auctions)
                 {
@@ -14741,13 +14797,13 @@ namespace Server.MirObjects
 
             Enqueue(new S.MarketFail { Reason = 7 });
         }
+        
         public void MarketGetBack(ulong auctionID)
         {
             if (Dead)
             {
                 Enqueue(new S.MarketFail { Reason = 0 });
                 return;
-
             }
 
             if (NPCPage == null || !String.Equals(NPCPage.Key, NPCObject.ConsignmentsKey, StringComparison.CurrentCultureIgnoreCase))
@@ -14760,6 +14816,12 @@ namespace Server.MirObjects
             {
                 NPCObject ob = CurrentMap.NPCs[n];
                 if (ob.ObjectID != NPCID) continue;
+                
+                if (!Functions.InRange(CurrentLocation, ob.CurrentLocation, 10))
+                {
+                    Enqueue(p);
+                    return;
+                }
 
                 foreach (AuctionInfo auction in Account.Auctions)
                 {
